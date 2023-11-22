@@ -15,7 +15,7 @@ import entidades.Editora;
 public class DataBaseAcess implements Dao{
 	
 	static private String USER = "root";
-	static private String PASS = "";
+	static private String PASS = "root";
 	static private String DATABASE = "livraria";
 	static private String URL = "jdbc:mysql://localhost:3306/" + DATABASE;
 	
@@ -50,9 +50,7 @@ public class DataBaseAcess implements Dao{
 	
 	@Override
 	public void delEditora(int publisher_id) {
-		
-		//validar se dessa forma irá excluir o livro também
-		
+				
 		final String query = "DELETE FROM publishers WHERE publisher_id = (?)";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
@@ -84,7 +82,7 @@ public class DataBaseAcess implements Dao{
 			
 			int results = psEditora.executeUpdate();
 			
-			System.out.println("Editora excluída com sucesso");
+			System.out.println("Editora atualizada com sucesso");
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -122,37 +120,39 @@ public class DataBaseAcess implements Dao{
 	
 	@Override
 	public List<Editora> buscaEditora(String nomeKey) {
-		List<Editora> listaEditora = new ArrayList<>();
-		final String query = "SELECT * FROM publisher WHERE LOWER(name) LIKE LOWER (?);";
-		
-		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
-			PreparedStatement psEditora = c.prepareStatement(query);
-			
-			psEditora.setString(1, "%" + nomeKey + "%");
-			
-			ResultSet res = psEditora.executeQuery(query);
-			
-			while (res.next()) {
-				
-				int publisher_id = res.getInt("publisher_id");
-				String name = res.getString("name");
-				String url = res.getString("url");
-				
-				Editora oEditora = new Editora(publisher_id, name, url);
-				listaEditora.add(oEditora);
-			}
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		return listaEditora;
+		List<Editora> publishers = new ArrayList<>();
+
+        final String query = "SELECT * FROM publishers WHERE LOWER(name) LIKE LOWER(?);";
+        try (Connection c = DriverManager.getConnection(URL, USER, PASS)){
+
+            PreparedStatement psEditora = c.prepareStatement(query);
+
+            psEditora.setString(1, "%" + nomeKey + "%");
+
+            ResultSet rs = psEditora.executeQuery();
+
+            while(rs.next()) {
+                int publishers_id = rs.getInt("publisher_id");
+                String nome = rs.getString("name");
+                String URL = rs.getString("URL");
+                Editora publisher = new Editora(publishers_id, nome, URL);
+                publishers.add(publisher);
+            }
+
+
+
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return publishers;
+    
 	}
 	//-------------END_Editora--------------//
 	
 	@Override
 	public void addAutor(Autor autor) {
-		final String query = "INSERT INTO books VALUES(?,?,?);";
+		final String query = "INSERT INTO authors VALUES(?,?,?);";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			PreparedStatement psAutor = c.prepareStatement(query);
@@ -175,7 +175,7 @@ public class DataBaseAcess implements Dao{
 	public void delAutor(int authors_id) {
 		
 		//Se eu excluir o autor os livros também devem ser apagados
-		final String query = "DELETE FROM author WHERE author_id = (?);";
+		final String query = "DELETE FROM authors WHERE author_id = (?);";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			PreparedStatement psAutor = c.prepareStatement(query);
@@ -196,7 +196,7 @@ public class DataBaseAcess implements Dao{
 	@Override
 	public void updateAuthors(Autor autor) {
 		
-		final String query = "UPDATE author SET name=(?),fname=(?) WHERE author_id = (?);";
+		final String query = "UPDATE authors SET name=(?),fname=(?) WHERE author_id = (?)";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			PreparedStatement psAutor = c.prepareStatement(query);
@@ -248,7 +248,7 @@ public class DataBaseAcess implements Dao{
 	@Override
 	public List<Autor> buscaAutor(String name, String fname) {
 		List<Autor> listaAutor = new ArrayList<>();
-		final String query = "SELECT * FROM authors WHERE LOWER(name) LIKE LOWER (?) AND LOWER(fname) LIKE LOWER (?);";
+		final String query = "SELECT * FROM authors WHERE LOWER(name) LIKE LOWER(?) AND LOWER(fname) LIKE LOWER(?);";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			PreparedStatement psAutor = c.prepareStatement(query);
@@ -256,7 +256,7 @@ public class DataBaseAcess implements Dao{
 			psAutor.setString(1, "%" + name + "%");
 			psAutor.setString(2, "%" + fname + "%");
 			
-			ResultSet res = psAutor.executeQuery(query);
+			ResultSet res = psAutor.executeQuery();
 			
 			while (res.next()) {
 				
@@ -379,7 +379,7 @@ public class DataBaseAcess implements Dao{
 			
 			psLivro.setString(1, "%" + titleKey + "%");
 			
-			ResultSet res = psLivro.executeQuery(query);
+			ResultSet res = psLivro.executeQuery();
 			
 			while (res.next()) {
 				
@@ -423,7 +423,7 @@ public class DataBaseAcess implements Dao{
 	
 	@Override
 	public void delLivroAutor(int author_id) {
-		final String query = "DELETE FROM BooksAuthor WHERE author_id = (?);";
+		final String query = "DELETE FROM BooksAuthors WHERE author_id = (?);";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			PreparedStatement psLivro = c.prepareStatement(query);
@@ -442,7 +442,7 @@ public class DataBaseAcess implements Dao{
 	
 	@Override
 	public void updateLivroAutor(LivroAutor booksauthors) {
-		final String query = "UPDATE books set author_id=(?), seq_no=(?) WHERE isbn = (?);";
+		final String query = "UPDATE BooksAuthors set author_id=(?), seq_no=(?) WHERE isbn = (?);";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			PreparedStatement psLivroAutor = c.prepareStatement(query);
@@ -465,7 +465,7 @@ public class DataBaseAcess implements Dao{
 	@Override
 	public List<LivroAutor> getLivroAutor() {
 		List<LivroAutor> listaLivroAutor = new ArrayList<>();
-		final String query = "SELECT * FROM BooksAuthor;";
+		final String query = "SELECT * FROM BooksAuthors;";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			PreparedStatement psLivroAutor = c.prepareStatement(query);
@@ -492,7 +492,7 @@ public class DataBaseAcess implements Dao{
 	@Override
 	public List<LivroAutor> buscaLivroAutor(String isbnKey) {
 		List<LivroAutor> listaLivroAutor = new ArrayList<>();
-		final String query = "SELECT * FROM BooksAuthor WHERE LOWER(isbn) LIKE LOWER (?);";
+		final String query = "SELECT * FROM BooksAuthors WHERE LOWER(isbn) LIKE LOWER (?);";
 		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			PreparedStatement psLivroAutor = c.prepareStatement(query);

@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.Action;
+import javax.swing.JOptionPane;
 
 import DAO.Dao;
 import view.View;
@@ -33,19 +34,22 @@ public class controller {
     	view.addActionListenerBuscarLivro(new AcaoBuscarLivro());
     	view.addActionListenerSelecaoLivro(new AcaoSelecaoLivro());
     	
-    	view.addActionListenerAdicionarAutor(new AcaoAtualizarAutor());
+    	view.addActionListenerAdicionarAutor(new AcaoAdicionarAutor());
     	view.addActionListenerDeletarAutor(new AcaoDeletarAutor());
     	view.addActionListenerAtualizarAutor(new AcaoAtualizarAutor());
     	view.addActionListenerListarAutor(new AcaoListarAutor());
     	view.addActionListenerBuscarAutor(new AcaoBuscarAutor());
     	view.addActionListenerSelecaoAutor(new AcaoSelecaoAutor());
     	
-    	view.addActionListenerAdicionarEditora(new AcaoAtualizarEditora());
+    	view.addActionListenerAdicionarEditora(new AcaoAdicionarEditora());
     	view.addActionListenerDeletarEditora(new AcaoDeletarEditora());
     	view.addActionListenerAtualizarEditora(new AcaoAtualizarEditora());
     	view.addActionListenerListarEditora(new AcaoListarEditora());
     	view.addActionListenerBuscarEditora(new AcaoBuscarEditora());
     	view.addActionListenerSelecaoEditora(new AcaoSelecaoEditora());
+    	
+    	view.addActionListenerAdicionarLivroAutor(new AcaoAdicionarLivroAutor());
+    	
     }
     
     class AcaoIncluirLivro implements ActionListener{
@@ -136,7 +140,14 @@ public class controller {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int author_id = view.delAutor();
-			model.delAutor(author_id);
+			
+			int resposta = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir esse autor?"
+					+ "Os livros relacionados serão excluídos também!!!");
+			if(resposta == 0) {
+				model.delAutor(author_id);
+			}else {
+				
+			}
 			
 		}
     	
@@ -209,7 +220,13 @@ public class controller {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int publisher_id = view.delEditora();
-			model.delEditora(publisher_id);
+			int resposta = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir essa editora?"
+					+ "Os livros cadastrados nela serão excluídos também!!!");
+			if(resposta == 0) {
+				model.delEditora(publisher_id);
+			}else {
+				
+			}
 			
 		}
     	
@@ -261,5 +278,13 @@ public class controller {
 			view.selecaoEditora(editora);
 		}
     	
+    }
+    
+    class AcaoAdicionarLivroAutor implements ActionListener{
+    	@Override
+    	public void actionPerformed(ActionEvent e) {
+    		LivroAutor livroAutor = view.addLivroAutor();
+			model.addLivroAutor(livroAutor);
+    	}
     }
 }

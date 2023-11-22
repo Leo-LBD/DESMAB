@@ -5,6 +5,7 @@ import java.awt.Component;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import javax.swing.JTextField;
 import javax.swing.event.MenuListener;
+import javax.swing.table.DefaultTableModel;
 
 import entidades.Autor;
 import entidades.Editora;
@@ -32,9 +34,11 @@ import javax.swing.JScrollPane;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JTextPane;
 
 public class menuFrame implements View{
 	private JTextField ISBNTextArea;
+	private JTextField SeqTextArea;
 	private JTextField TituloTextArea;
 	private JTextField PrecoTextArea;
 	private javax.swing.JButton btnIncluirLivro;
@@ -49,6 +53,7 @@ public class menuFrame implements View{
 	private javax.swing.JButton btnEditarLivro;
 	private javax.swing.JButton btnEditarAutor;
 	private javax.swing.JButton btnEditarEditora;
+	private javax.swing.JButton btnIncluirIncluir;
 	private JTextField NomeTextArea;
 	private JTextField SobrenomeTextArea;
 	private JTextField NomeETextArea;
@@ -60,12 +65,20 @@ public class menuFrame implements View{
 	private JTextField DeletarLivroISBNTextArea;
 	private JTextField DeletarAutorIdTextField;
 	private JTextField DeletarIdEditoraTetField;
+	
+	DefaultTableModel modelEditora = new DefaultTableModel(new Object[] {"ID", "Nome", "URL"}, 0);
+	DefaultTableModel modelLivro = new DefaultTableModel(new Object[] {"Titulo", "ISBN", "Editora","Preço"}, 0);
+	DefaultTableModel modelAutor = new DefaultTableModel(new Object[] {"ID", "Nome", "Sobrenome"}, 0);
+	private JTable tabelaLivro;
+	private JTable tabelaAutor;
+	private JTable tabelaEditora;
 	private JTabbedPane tabbedPane;
 	private JTabbedPane Incluir;
 	private JTabbedPane Buscar;
 	private JTabbedPane Editar;
 	private JTabbedPane Deletar;
 	private JComboBox comboBoxIncluirLivro;
+	private JComboBox comboBoxIncluirLivroAutor;
 	private JComboBox EditarLivroEditoraComboBox;
 	private JComboBox EditarLivroAutorComboBox;
 	
@@ -96,6 +109,7 @@ public class menuFrame implements View{
 	DefaultComboBoxModel<Editora> selecaoEditora = new DefaultComboBoxModel<Editora>();
 	DefaultComboBoxModel<Livro> selecaoLivro = new DefaultComboBoxModel<Livro>();
 	DefaultComboBoxModel<Autor> selecaoAutor = new DefaultComboBoxModel<Autor>();
+	
 	private JTextField EditarLivroISBNTextField;
 	private JTextField EditarTituloLivroTextField;
 	private JTextField EditarPrecoLivroTextField;
@@ -108,7 +122,7 @@ public class menuFrame implements View{
 
 	public menuFrame() {
 		JFrame frame = new JFrame();
-		frame.setTitle("BorderPane");
+		frame.setTitle("Livraria Amazônia");
 		frame.setSize(812, 562);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
@@ -358,6 +372,16 @@ public class menuFrame implements View{
 		isbn.setBounds(20, 75, 34, 14);
 		IncluirLivro.add(isbn);
 		
+		JLabel seq = new JLabel("Seq");
+		seq.setFont(new Font("Arial", Font.PLAIN, 13));
+		seq.setBounds(200, 75, 34, 14);
+		IncluirLivro.add(seq);
+		
+		SeqTextArea = new JTextField();
+		SeqTextArea.setBounds(230, 72, 79, 20);
+		IncluirLivro.add(SeqTextArea);
+		SeqTextArea.setColumns(10);
+		
 		JLabel DivisoriaIncluirLivro = new JLabel("________________________________________________________________________________________________________________________________");
 		DivisoriaIncluirLivro.setBounds(10, 50, 783, 14);
 		IncluirLivro.add(DivisoriaIncluirLivro);
@@ -407,6 +431,27 @@ public class menuFrame implements View{
 		comboBoxIncluirLivro.setModel(selecaoEditora);
 		comboBoxIncluirLivro.setRenderer(new EditoraRenderer());
 		
+		JLabel author = new JLabel("Autor");
+		author.setFont(new Font("Arial", Font.PLAIN, 13));
+		author.setBounds(20, 205, 46, 14);
+		IncluirLivro.add(author);
+		
+		comboBoxIncluirLivroAutor = new JComboBox();
+		comboBoxIncluirLivroAutor.setBounds(76, 200, 147, 22);
+		IncluirLivro.add(comboBoxIncluirLivroAutor);
+		comboBoxIncluirLivroAutor.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				Autor autor = (Autor) comboBoxIncluirLivroAutor.getSelectedItem();
+				
+			}
+			
+		});
+		
+		comboBoxIncluirLivroAutor.setModel(selecaoAutor);
+		comboBoxIncluirLivroAutor.setRenderer(new AutorRenderer());
+		
+		
 		JScrollPane scrollPaneIncluirLivro = new JScrollPane();
 		scrollPaneIncluirLivro.setBounds(20, 231, 773, 266);
 		IncluirLivro.add(scrollPaneIncluirLivro);
@@ -414,12 +459,18 @@ public class menuFrame implements View{
 		btnIncluirLivro = new JButton("Incluir");
 		btnIncluirLivro.setBounds(704, 197, 89, 23);
 		btnIncluirLivro.addActionListener(new ActionListener() {
-			
-				public void actionPerformed(ActionEvent e) {
-					btnIncluirActionPerformed(e);
+				public void actionPerformed(ActionEvent e) {	
 				}
 			});
 		IncluirLivro.add(btnIncluirLivro);
+		
+		btnIncluirIncluir = new JButton("Adicionar Autor");
+		btnIncluirIncluir.setBounds(570, 197, 125, 23);
+		btnIncluirIncluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {	
+			}
+		});
+		IncluirLivro.add(btnIncluirIncluir);
 		
 		//------------End_Incluir------------//
 		
@@ -451,13 +502,18 @@ public class menuFrame implements View{
 		BuscaLivro.add(BuscarTituloTextArea);
 		BuscarTituloTextArea.setColumns(10);
 		
-		JScrollPane scrollPaneBuscaLivro = new JScrollPane();
-		scrollPaneBuscaLivro.setBounds(24, 230, 754, 268);
-		BuscaLivro.add(scrollPaneBuscaLivro);
-		
 		btnBuscarLivro = new JButton("Buscar");
 		btnBuscarLivro.setBounds(689, 196, 89, 23);
 		BuscaLivro.add(btnBuscarLivro);
+		
+		JScrollPane scrollPaneBuscaLivro = new JScrollPane();
+		scrollPaneBuscaLivro.setBounds(20, 230, 771, 262);
+		BuscaLivro.add(scrollPaneBuscaLivro);
+		
+		tabelaLivro = new JTable(modelLivro);
+        tabelaLivro.setModel(modelLivro);
+        scrollPaneBuscaLivro.setViewportView(tabelaLivro);
+		
 		
 		JPanel BuscaAutor = new JPanel();
 		Buscar.addTab("Autor", null, BuscaAutor, null);
@@ -489,6 +545,10 @@ public class menuFrame implements View{
 		JScrollPane scrollPaneBuscaAutor = new JScrollPane();
 		scrollPaneBuscaAutor.setBounds(10, 231, 754, 252);
 		BuscaAutor.add(scrollPaneBuscaAutor);
+		
+		tabelaAutor = new JTable(modelAutor);
+        tabelaAutor.setModel(modelAutor);
+        scrollPaneBuscaAutor.setViewportView(tabelaAutor);
 		
 		JLabel BuscarSobrenomeAutor = new JLabel("Sobrenome");
 		BuscarSobrenomeAutor.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -530,6 +590,10 @@ public class menuFrame implements View{
 		JScrollPane scrollPaneBuscaEditora = new JScrollPane();
 		scrollPaneBuscaEditora.setBounds(10, 231, 754, 252);
 		BuscaEditora.add(scrollPaneBuscaEditora);
+		
+		tabelaEditora = new JTable(modelEditora);
+        tabelaEditora.setModel(modelEditora);
+        scrollPaneBuscaEditora.setViewportView(tabelaEditora);
 		
 		//---------------End_Busca---------------//
 		
@@ -617,7 +681,7 @@ public class menuFrame implements View{
 		DeletarIdEditoraTetField.setBounds(66, 82, 129, 20);
 		DeletarEditora.add(DeletarIdEditoraTetField);
 		
-		JLabel IdEditoraDeletar = new JLabel("Nome");
+		JLabel IdEditoraDeletar = new JLabel("Id");
 		IdEditoraDeletar.setFont(new Font("Arial", Font.PLAIN, 13));
 		IdEditoraDeletar.setBounds(20, 85, 46, 14);
 		DeletarEditora.add(IdEditoraDeletar);
@@ -635,6 +699,7 @@ public class menuFrame implements View{
 		DeletarEditora.add(DivisóriaDeletarEditora);
 		
 		//------------End_Deletar--------------//
+		
 		//------------Inicio_Editar------------//
 		
 		Editar = new JTabbedPane(JTabbedPane.BOTTOM);
@@ -645,7 +710,7 @@ public class menuFrame implements View{
 		EditarLivro.setLayout(null);
 		
 		JLabel lblEditarLivro = new JLabel("Editar Livro");
-		lblEditarLivro.setFont(new Font("Arial", Font.PLAIN, 22));
+		lblEditarLivro.setFont(new Font("Arial", Font.BOLD, 20));
 		lblEditarLivro.setBounds(24, 10, 121, 40);
 		EditarLivro.add(lblEditarLivro);
 		
@@ -694,7 +759,7 @@ public class menuFrame implements View{
 		EditarLivroEditoraComboBox.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				Editora editora = (Editora) comboBoxIncluirLivro.getSelectedItem();
+				Editora editora = (Editora) EditarLivroEditoraComboBox.getSelectedItem();
 				
 			}
 			
@@ -714,14 +779,14 @@ public class menuFrame implements View{
 		EditarLivroAutorComboBox.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				Autor autor = (Autor) comboBoxIncluirLivro.getSelectedItem();
+				Autor autor = (Autor) EditarLivroAutorComboBox.getSelectedItem();
 				
 			}
 			
 		});
 		
-		EditarLivroEditoraComboBox.setModel(selecaoAutor);
-		EditarLivroEditoraComboBox.setRenderer(new AutorRenderer());
+		EditarLivroAutorComboBox.setModel(selecaoAutor);
+		EditarLivroAutorComboBox.setRenderer(new AutorRenderer());
 		
 		JScrollPane scrollPaneEditarLivro = new JScrollPane();
 		scrollPaneEditarLivro.setBounds(24, 298, 766, 195);
@@ -729,7 +794,7 @@ public class menuFrame implements View{
 		
 		btnEditarLivro = new JButton("Atualizar");
 		btnEditarLivro.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnEditarLivro.setBounds(705, 267, 85, 21);
+		btnEditarLivro.setBounds(704, 270, 85, 21);
 		EditarLivro.add(btnEditarLivro);
 		
 		JPanel EditarAutor = new JPanel();
@@ -789,7 +854,7 @@ public class menuFrame implements View{
 		EditarEditora.setLayout(null);
 		
 		JLabel lblEditarEditora = new JLabel("Editar Editora");
-		lblEditarEditora.setFont(new Font("Arial", Font.PLAIN, 22));
+		lblEditarEditora.setFont(new Font("Arial", Font.BOLD, 20));
 		lblEditarEditora.setBounds(32, 21, 155, 26);
 		EditarEditora.add(lblEditarEditora);
 		
@@ -858,25 +923,28 @@ public class menuFrame implements View{
 
 	@Override
 	public int delEditora() {
-		// TODO Auto-generated method stub
-		return 0;
+		int publisher_id = Integer.parseInt(DeletarIdEditoraTetField.getText());
+		return publisher_id;
 	}
 
 	@Override
 	public void addActionListenerDeletarEditora(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnDeletarEditora.addActionListener(al);
 		
 	}
 
 	@Override
 	public Editora updateEditora() {
-		// TODO Auto-generated method stub
-		return null;
+		int publisher_id = Integer.parseInt(EditarIdEditoraTextField.getText());
+		String name = EditarNomeEditoraTextField.getText();
+		String url = EditarUrlEditoraTextField.getText();
+		
+		return new Editora(publisher_id,name,url);
 	}
 
 	@Override
 	public void addActionListenerAtualizarEditora(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnEditarEditora.addActionListener(al);
 		
 	}
 
@@ -894,13 +962,17 @@ public class menuFrame implements View{
 
 	@Override
 	public void buscaEditora(List<Editora> editora) {
-		// TODO Auto-generated method stub
+		modelEditora.setRowCount(0);
+        for(Editora p: editora) {
+            modelEditora.addRow(new Object[] {p.getPublisher_id(), p.getName(), p.getUrl()});
+            System.out.println(p.getPublisher_id() +" " + p.getName()+" " + p.getUrl());
+        }
 		
 	}
 
 	@Override
 	public void addActionListenerBuscarEditora(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnBuscarEditora.addActionListener(al);
 		
 	}
 	
@@ -923,14 +995,19 @@ public class menuFrame implements View{
             return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         }
 	}
-
+	
+	@Override
+	public void addActionListenerSelecaoEditora(ActionListener al) {
+		Livro_item.addActionListener(al);
+		EditarLivro_item.addActionListener(al);
+	}
+	
 	@Override
 	public Autor addAutor() {
 		
 		int author_id = 0;
 		String name = NomeTextArea.getText();
 		String fname = SobrenomeTextArea.getText();
-		
 		return new Autor(author_id,name,fname);
 	}
 
@@ -942,25 +1019,28 @@ public class menuFrame implements View{
 
 	@Override
 	public int delAutor() {
-		// TODO Auto-generated method stub
-		return 0;
+		int author_id = Integer.parseInt(DeletarAutorIdTextField.getText());
+		return author_id;
 	}
 
 	@Override
 	public void addActionListenerDeletarAutor(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnDeletarAutor.addActionListener(al);
 		
 	}
 
 	@Override
 	public Autor updateAuthors() {
-		// TODO Auto-generated method stub
-		return null;
+		int author_id = Integer.parseInt(EditarAutorIdTextField.getText());
+		String name = EditarAutorNomeTextField.getText();
+		String fname = EditarAutorSobrenomeTextField.getText();
+		
+		return new Autor(author_id,name,fname);
 	}
 
 	@Override
 	public void addActionListenerAtualizarAutor(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnEditarAutor.addActionListener(al);
 		
 	}
 
@@ -978,13 +1058,17 @@ public class menuFrame implements View{
 
 	@Override
 	public void buscaAutor(List<Autor> autor) {
-		// TODO Auto-generated method stub
+		modelAutor.setRowCount(0);
+        for(Autor p: autor) {
+            modelAutor.addRow(new Object[] {p.getAuthor_id(), p.getName(), p.getFname()});
+            System.out.println(p.getAuthor_id() +" " + p.getName()+" " + p.getFname());
+        }
 		
 	}
 
 	@Override
 	public void addActionListenerBuscarAutor(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnBuscarAutor.addActionListener(al);
 		
 	}
 
@@ -1009,13 +1093,13 @@ public class menuFrame implements View{
 	
 	@Override
 	public String delLivro() {
-		// TODO Auto-generated method stub
-		return null;
+		String isbn = DeletarLivroISBNTextArea.getText();
+		return isbn;
 	}
 
 	@Override
 	public void addActionListenerDeletarLivro(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnDeletarLivro.addActionListener(al);
 		
 	}
 
@@ -1052,25 +1136,33 @@ public class menuFrame implements View{
 
 	@Override
 	public void buscaLivro(List<Livro> livro) {
-		// TODO Auto-generated method stub
+		modelLivro.setRowCount(0);
+        for(Livro p: livro) {
+            modelLivro.addRow(new Object[] {p.getTitle(), p.getIsbn(), p.getPublisher_id(), p.getPrice()});
+            System.out.println(p.getTitle() +" " + p.getIsbn()+" " + p.getPublisher_id()+" "+ p.getPrice());
+        }
 		
 	}
 
 	@Override
 	public void addActionListenerBuscarLivro(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnBuscarLivro.addActionListener(al);
 		
 	}
 
 	@Override
 	public LivroAutor addLivroAutor() {
-		// TODO Auto-generated method stub
-		return null;
+		Autor author = (Autor) comboBoxIncluirLivroAutor.getSelectedItem();
+		String isbn = ISBNTextArea.getText();
+		int id = author.getAuthor_id();
+		int seq = Integer.parseInt(SeqTextArea.getText());
+		
+		return new LivroAutor(isbn,id,seq);
 	}
 
 	@Override
 	public void addActionListenerAdicionarLivroAutor(ActionListener al) {
-		// TODO Auto-generated method stub
+		btnIncluirIncluir.addActionListener(al);
 		
 	}
 
@@ -1132,25 +1224,25 @@ public class menuFrame implements View{
 	@Override
 	public String getKeyBuscaEditora() {
 		// TODO Auto-generated method stub
-		return null;
+		return BuscarEditoraNomeTetField.getText();
 	}
 
 	@Override
 	public String getKeyBuscaAutor() {
 		// TODO Auto-generated method stub
-		return null;
+		return BuscarAutorNomeTextField.getText();
 	}
 
 	@Override
 	public String getKeyBuscaAutor2() {
 		// TODO Auto-generated method stub
-		return null;
+		return BuscarAutorSobrenomeTextField.getText();
 	}
 
 	@Override
 	public String getKeyBuscaLivro() {
 		// TODO Auto-generated method stub
-		return null;
+		return BuscarTituloTextArea.getText();
 	}
 
 	@Override
@@ -1159,25 +1251,17 @@ public class menuFrame implements View{
 		return null;
 	}
 
-	@Override
-	public void addActionListenerSelecaoEditora(ActionListener al) {
-		
-		Livro_item.addActionListener(al);
-		
-	}
-
 	
-
 	@Override
 	public void addActionListenerSelecaoAutor(ActionListener al) {
-		
-		
+		Livro_item.addActionListener(al);
+		EditarLivro_item.addActionListener(al);
 	}
 
 	@Override
 	public void selecaoAutor(List<Autor> autor) {
 		for (Autor e: autor) {
-			selecaoAutor.addElement(e);			
+			selecaoAutor.addElement(e);		//metodos para baixar os dados da combo box	
 		}
 		
 	}
@@ -1190,7 +1274,7 @@ public class menuFrame implements View{
                 Autor p = (Autor) value;
                 value = p.getName();
             }
-            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus); //design de como vai aparecer a combo box
         }
 	}
 
